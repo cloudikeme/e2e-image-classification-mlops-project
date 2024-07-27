@@ -81,3 +81,83 @@ For faster training with a compatible NVIDIA GPU:
 
 * This README provides a basic framework. Customize it with details about your project, dataset, model architecture, and evaluation instructions. 
 * Remember to activate your conda environment (`conda activate tf_env`) before running your script or installing dependencies.
+
+
+## Running Your Image Classification Training Script (For Beginners)
+
+This guide explains how to run the `training.py` script and verify your model is training correctly. 
+
+**Prerequisites**
+
+1. **Completed README Setup:** You should have already cloned the repository, created a conda environment, and installed the required packages according to the README instructions.
+2. **Chosen Your Directories:** Decide where on your computer you want to save your trained model and checkpoints.  Some suggestions:
+
+   - **Windows:**
+     - `C:\Users\YourUsername\Documents\ml_projects\saved_models`
+     - `C:\Users\YourUsername\Documents\ml_projects\checkpoints`
+
+   - **macOS/Linux:**
+     - `/Users/YourUsername/Documents/ml_projects/saved_models`
+     - `/Users/YourUsername/Documents/ml_projects/checkpoints` 
+     - Or use `~/Dev/ml_projects/saved_models` (the `~` represents your home directory)
+
+**Steps**
+
+1. **Create Directories (if needed):**
+   - **Windows (Command Prompt):**
+     ```bash
+     mkdir C:\Users\YourUsername\Documents\ml_projects\saved_models
+     mkdir C:\Users\YourUsername\Documents\ml_projects\checkpoints
+     ```
+
+   - **macOS/Linux (Terminal):**
+     ```bash
+     mkdir -p /Users/YourUsername/Documents/ml_projects/saved_models
+     mkdir -p /Users/YourUsername/Documents/ml_projects/checkpoints
+     ```
+     - Or (shorthand): 
+       ```bash
+       mkdir -p ~/Dev/ml_projects/saved_models 
+       mkdir -p ~/Dev/ml_projects/checkpoints
+       ```
+
+2. **Open Your Terminal/Command Prompt:**
+   - **Windows:** Search for "cmd" or "Command Prompt"
+   - **macOS:** Search for "Terminal"
+   - **Linux:** Your terminal application will vary by distribution.
+
+3. **Navigate to Project Directory:**
+   - Use the `cd` command to navigate to the directory where your `training.py` script is located. For example:
+     ```bash
+     cd /Users/YourUsername/Documents/image-classification-fashion-mnist 
+     ```
+     (Replace with your actual directory path)
+
+4. **Run the Training Script:** 
+   - Use the following command, replacing the placeholders with your chosen directories:
+
+     ```bash
+     python training.py --saved_model_dir "C:\Users\YourUsername\Documents\ml_projects\saved_models" --checkpoint_dir "C:\Users\YourUsername\Documents\ml_projects\checkpoints" --model_type cnn
+     ```
+     **Important:**
+      - Use forward slashes (`/`) in paths on macOS/Linux.
+      - Use double quotes (`"`) around paths with spaces in them on Windows. 
+      - Replace `"C:\Users\YourUsername\Documents\ml_projects\saved_models"` and `"C:\Users\YourUsername\Documents\ml_projects\checkpoints"` with your chosen model and checkpoint directories.
+      - Choose the `model_type`: `cnn`, `dropout`, or `batch_norm`.
+
+5. **Observe the Output:**
+   - You should see the training progress printed to the terminal. Look for:
+     - Model summary (layers, parameters)
+     - Epoch numbers and training metrics (loss, accuracy) - These should generally improve over time.
+
+6. **Verify Saved Files:**
+   - After training completes, check your chosen `saved_model_dir` and `checkpoint_dir` locations. You should see files related to your saved model and checkpoints. 
+
+**Troubleshooting:**
+
+- **Errors:** Carefully read any error messages. Common issues include: 
+  - Incorrect paths
+  - Missing dependencies (revisit the README installation steps) 
+- **Performance:** If training is slow, consider:
+  - Using a GPU if available (requires a different TensorFlow installation).
+  - Reducing the batch size in the `training.py` script.

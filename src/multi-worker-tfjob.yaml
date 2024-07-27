@@ -1,0 +1,27 @@
+apiVersion: kubeflow.org/v1
+kind: TFJob
+metadata:
+name: multi-worker-training
+spec:
+runPolicy:
+cleanPodPolicy: None
+tfReplicaSpecs:
+Worker:
+replicas: 2
+restartPolicy: Never
+template:
+spec:
+containers:
+- name: tensorflow
+image: kubeflow/multi-worker-strategy:v0.1
+imagePullPolicy: IfNotPresent
+command: ["python", "/distributed_training.py", "--volumeMounts:
+- mountPath: /trained_model
+name: training
+resources:
+limits:
+cpu: 500m
+volumes:
+- name: training
+persistentVolumeClaim:
+claimName: strategy-volume
