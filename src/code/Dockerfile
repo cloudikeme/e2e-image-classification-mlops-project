@@ -6,13 +6,15 @@ WORKDIR /app
 
 # Copy only the necessary files to reduce image size 
 COPY requirements.txt ./ 
-COPY distributed_training.py ./ 
 
 # Install dependencies before copying the rest of the project
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the remaining project files (if any)
-# COPY . .
+# Copy the remaining project files
+COPY distributed_training.py ./ 
+COPY evaluate_models.py ./
+COPY predict.py ./
+
 
 # Make port 8888 available (adjust if needed)
 EXPOSE 8888
