@@ -11,6 +11,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the remaining project files
+COPY data_ingestion.py ./
 COPY distributed_training.py ./ 
 COPY evaluate_models.py ./
 COPY predict.py ./
