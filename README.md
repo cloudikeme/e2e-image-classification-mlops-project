@@ -1,4 +1,4 @@
-# End-to-End Distributed MLOps Project On a KinD Kubernetes Cluster #1
+# End-to-End Distributed MLOps Model Training and Deployment Using Tensorflow, Kubeflow and Argo Workflow.
 
 ## Image Classification Project
 
