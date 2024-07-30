@@ -9,7 +9,7 @@ def scale(image, label):
     return image, label
 
 def load_best_model():
-    model_path = "trained_model/saved_model_versions/4"
+    model_path = "trained_model/saved_model_versions/"
     return keras.models.load_model(model_path)
 
 def prepare_data():
@@ -28,3 +28,6 @@ if __name__ == "__main__":
     model = load_best_model()
     data = prepare_data()
     predict(model, data)
+
+
+    model = keras.models.load_model("trained_model/saved_model_versions")
