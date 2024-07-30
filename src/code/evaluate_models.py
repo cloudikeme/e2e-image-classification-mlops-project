@@ -15,7 +15,7 @@ def evaluate_models():
     best_accuracy = 0
     
     for i in range(1, 4):
-        model_path = "models/cnn/saved-models/"
+        model_path = "trained_model/saved_model_versions/" + str(i)
         model = keras.models.load_model(model_path)
         
         datasets, _ = tfds.load(name='fashion_mnist', with_info=True, as_supervised=True)
@@ -27,7 +27,7 @@ def evaluate_models():
             best_accuracy = accuracy
             best_model_path = model_path
 
-    destination = "models/selected_model"
+    destination = "trained_model/saved_model_versions/4"
     if os.path.exists(destination):
         shutil.rmtree(destination)
 

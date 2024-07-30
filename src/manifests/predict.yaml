@@ -10,6 +10,9 @@ spec:
     volumeMounts:
     - name: model
       mountPath: /trained_model
+    resources:
+      limits:
+        cpu: 500m
   volumes:
   - name: model
     persistentVolumeClaim:
