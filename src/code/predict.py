@@ -9,12 +9,12 @@ def scale(image, label):
     return image, label
 
 def load_best_model():
-    model_path = "trained_model/saved_model_versions"
+    model_path = "trained_model/saved_model_versions/4"
     return keras.models.load_model(model_path)
 
 def prepare_data():
     datasets, _ = tfds.load(name='fashion_mnist', with_info=True, as_supervised=True)
-    return datasets['test'].map(scale).batch(1)
+    return datasets['test'].map(scale).batch(3)
 
 def predict(model, data):
     for image, label in data.take(1):  # Predict on a single image
