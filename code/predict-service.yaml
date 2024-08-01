@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: predict
-    image: kubeflow/multi-worker-strategy:v0.1
+    image: kubeflow/training-job:v0.2
     command: ['sleep', 'infinity']
     volumeMounts:
     - name: model
