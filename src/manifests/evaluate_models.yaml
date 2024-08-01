@@ -6,7 +6,7 @@ spec:
   containers:
   - name: predict
     image: kubeflow/training-job:v0.2
-    command: ["python", "/evaluate_models.py"]
+    command: ["python", "evaluate_models.py"]
     volumeMounts:
     - name: model
       mountPath: /trained_model

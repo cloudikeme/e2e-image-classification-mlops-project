@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir tensorflow==2.4.3 && \
     rm -rf /root/.cache/pip
 
 # Copy only the necessary Python scripts
-COPY data_ingestion.py distributed_training.py evaluate_models.py predict.py ./
+COPY data-ingestion.py multi-worker-distributed-training.py model-selection.py predict-service.py ./
 
 # Clean up
 RUN apt-get update && \
