@@ -1,14 +1,24 @@
-# Use an official TensorFlow runtime as a parent image
-FROM tensorflow/tensorflow:2.4.3-gpu 
+# Use a non-GPU TensorFlow base image
+FROM python:3.8-slim-buster
 
-# Copy only the necessary files to reduce image size 
-COPY requirements.txt ./ 
+# Set the working directory
+WORKDIR /app
 
-# Install dependencies before copying the rest of the project
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy only the requirements file first
+COPY requirements.txt .
 
-# Copy the remaining project files
-COPY data_ingestion.py /
-COPY distributed_training.py / 
-COPY evaluate_models.py /
-COPY predict.py /
+# Install TensorFlow and other dependencies
+RUN pip install --no-cache-dir tensorflow==2.4.3 && \
+    pip install --no-cache-dir -r requirements.txt && \
+    rm -rf /root/.cache/pip
+
+# Copy only the necessary Python scripts
+COPY data_ingestion.py distributed_training.py evaluate_models.py predict.py ./
+
+# Clean up
+RUN apt-get update && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the default command
+CMD ["python", "distributed_training.py"]
