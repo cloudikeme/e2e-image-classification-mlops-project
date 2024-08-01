@@ -2,7 +2,7 @@
 apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
-  name: fufu_sample
+  name: fufu-sample
 spec:
   predictor:
     model:
