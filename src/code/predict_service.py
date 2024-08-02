@@ -14,7 +14,9 @@ def scale(image, label):
 
 datasets, _ = tfds.load(name='fashion_mnist', with_info=True, as_supervised=True)
 
-ds = datasets['test'].map(scale).cache().shuffle(10000).batch(64)
+ds = datasets['test'].map(scale).cache().shuffle(10000).batch(3)
 
 # TODO: Visualize the images and compare with the classified result
 model.predict(ds)
+
+model = keras.models.load_model("trained_model/saved_model_versions")

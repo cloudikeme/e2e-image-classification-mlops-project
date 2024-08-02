@@ -15,7 +15,7 @@ def scale(image, label):
 best_model_path = ""
 best_accuracy = 0
 for i in range(1, 4):
-  model_path = "trained_model/saved_model_versions/" + str(i)
+  model_path = "/trained_model/saved_model_versions"
   model = keras.models.load_model(model_path)
   datasets, _ = tfds.load(name='fashion_mnist', with_info=True, as_supervised=True)
   ds = datasets['test'].map(scale).cache().shuffle(10000).batch(64)
