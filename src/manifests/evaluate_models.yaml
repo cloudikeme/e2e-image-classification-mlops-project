@@ -4,14 +4,15 @@ metadata:
   name: model-selection
 spec:
   containers:
-  - name: predict
+  - name: model-selection
     image: kubeflow/distributed-training:v0.1
-    command: ["python"]
-    args: ["/model_selection.py"]
+    command: ["python", "model_selection.py"]
     volumeMounts:
     - name: model
       mountPath: /trained_model
-  restartPolicy: OnFailure
+    resources:
+      limits:
+       cpu: 500m
   volumes:
   - name: model
     persistentVolumeClaim:
