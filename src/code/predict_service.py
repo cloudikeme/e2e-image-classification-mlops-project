@@ -4,7 +4,7 @@ from tensorflow import keras
 import tensorflow_datasets as tfds
 
 
-model = keras.models.load_model("trained_model/saved_model_versions")
+model = keras.models.load_model("trained_model/saved_model_versions/4")
 
 # Scaling MNIST data from (0, 255] to (0., 1.]
 def scale(image, label):
@@ -19,4 +19,4 @@ ds = datasets['test'].map(scale).cache().shuffle(10000).batch(3)
 # TODO: Visualize the images and compare with the classified result
 model.predict(ds)
 
-model = keras.models.load_model("trained_model/saved_model_versions")
+model = keras.models.load_model("trained_model/saved_model_versions/4")
