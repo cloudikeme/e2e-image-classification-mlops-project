@@ -1,9 +1,6 @@
 # Use a non-GPU TensorFlow base image
 FROM python:3.8-slim
 
-# Set the working directory
-WORKDIR /app
-
 # Copy only the requirements file first
 COPY requirements.txt .
 

@@ -14,3 +14,5 @@ spec:
       # This is only needed on Mac M1
       image: "emacski/tensorflow-serving:2.6.0"
       storageUri: "pvc://strategy-volume/saved_model_versions"
+
+https://github.com/kserve/kserve/blob/master/hack/quick_install.sh
