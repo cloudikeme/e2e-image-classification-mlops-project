@@ -1,16 +1,18 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: evaluate_models
+  name: model-selection
 spec:
   containers:
   - name: predict
-    image: kubeflow/training-job:v0.2
-    command: ["python", "evaluate_models.py"]
+    image: kubeflow/distributed-training:v0.1
+    command: ["python"]
+    args: ["/model_selection.py"]
     volumeMounts:
     - name: model
       mountPath: /trained_model
+  restartPolicy: OnFailure
   volumes:
   - name: model
     persistentVolumeClaim:
-      claimName: strategy_volume
+      claimName: strategy-volume

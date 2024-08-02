@@ -1,5 +1,5 @@
 # Use a non-GPU TensorFlow base image
-FROM python:3.8-slim-buster
+FROM python:3.8-slim
 
 # Set the working directory
 WORKDIR /app
@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir tensorflow==2.4.3 && \
     rm -rf /root/.cache/pip
 
 # Copy only the necessary Python scripts
-COPY data_ingestion.py distributed_training.py model_selection.py predict_service.py
+COPY data_ingestion.py distributed_training.py model_selection.py predict_service.py ./
 
 # Clean up
 RUN apt-get update && \
