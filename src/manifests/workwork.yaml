@@ -1,0 +1,150 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: wf-tfjob
+  namespace: kubeflow
+spec:
+  entrypoint: tfjob-wf
+  podGC:
+    strategy: OnPodCompletion
+  volumes:
+  - name: model-storage
+    persistentVolumeClaim:
+      claimName: strategy-volume
+
+  templates:
+  - name: tfjob-wf
+    steps:
+    - - name: data-ingestion
+        template: data-ingestion
+    - - name: distributed-tf-training
+        template: distributed-tf-training
+    - - name: model-selection
+        template: model-selection
+    - - name: create-inference-service
+        template: create-inference-service
+
+  - name: data-ingestion
+    serviceAccountName: argo
+    memoize:
+      key: "data-ingestion-cache"
+      maxAge: "24h"
+      cache:
+        configMap:
+          name: workflow-cache
+          key: data-ingestion
+    container:
+      image: kubeflow/distributed-training:v0.1
+      command: ["python", "/data_ingestion.py"]
+      volumeMounts:
+      - name: model-storage
+        mountPath: /data
+
+  - name: distributed-tf-training
+    steps:
+    - - name: cnn-model
+        template: tf-job
+        arguments:
+          parameters:
+          - name: model-type
+            value: cnn
+          - name: version
+            value: "1"
+      - name: cnn-model-dropout
+        template: tf-job
+        arguments:
+          parameters:
+          - name: model-type
+            value: dropout
+          - name: version
+            value: "2"
+      - name: cnn-model-batch-norm
+        template: tf-job
+        arguments:
+          parameters:
+          - name: model-type
+            value: batch-norm
+          - name: version
+            value: "3"
+
+  - name: tf-job
+    serviceAccountName: training-operator
+    inputs:
+      parameters:
+      - name: model-type
+      - name: version
+    resource:
+      action: create
+      setOwnerReference: true
+      successCondition: status.replicaStatuses.Worker.succeeded == 2
+      failureCondition: status.replicaStatuses.Worker.failed > 0
+      manifest: |
+        apiVersion: kubeflow.org/v1
+        kind: TFJob
+        metadata:
+          generateName: tf-training-{{inputs.parameters.model-type}}-
+        spec:
+          runPolicy:
+            cleanPodPolicy: None
+          tfReplicaSpecs:
+            Worker:
+              replicas: 2
+              restartPolicy: Never
+              template:
+                spec:
+                  containers:
+                    - name: tensorflow
+                      image: kubeflow/distributed-training:v0.1
+                      command:
+                        - python
+                        - /distributed_training.py
+                        - --saved_model_dir
+                        - /trained_model/saved_model_versions/{{inputs.parameters.version}}/
+                        - --checkpoint_dir
+                        - /trained_model/checkpoint
+                        - --model_type
+                        - {{inputs.parameters.model-type}}
+                      volumeMounts:
+                        - mountPath: /trained_model
+                          name: model-storage
+                      resources:
+                        limits:
+                          cpu: 1
+                          memory: 2Gi
+                        requests:
+                          cpu: 500m
+                          memory: 1Gi
+                  volumes:
+                    - name: model-storage
+                      persistentVolumeClaim:
+                        claimName: strategy-volume
+
+  - name: model-selection
+    serviceAccountName: argo
+    container:
+      image: kubeflow/distributed-training:v0.1
+      imagePullPolicy: IfNotPresent
+      command: ["python", "/model_selection.py"]
+      volumeMounts:
+      - name: model-storage
+        mountPath: /trained_model
+
+  - name: create-inference-service
+    serviceAccountName: training-operator
+    resource:
+      action: create
+      setOwnerReference: true
+      successCondition: status.conditions[?(@.type=='Ready')].status == 'True'
+      manifest: |
+        apiVersion: serving.kserve.io/v1beta1
+        kind: InferenceService
+        metadata:
+          name: fufu-classifier
+          namespace: kubeflow
+        spec:
+          predictor:
+            model:
+              modelFormat:
+                name: tensorflow
+              storageUri: "pvc://strategy-volume/saved_model_versions"
+              runtimeVersion: "2.6.0"
